@@ -133,6 +133,7 @@ class Environment:
 			old_snake[i - 1]
 			for i in range(1, len(old_snake))
 		]
+		self._update_board()
 
 	def _compute_new_head(self, action):
 		"""Move the Snake's Head according to the given action"""

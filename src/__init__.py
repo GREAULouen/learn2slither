@@ -17,7 +17,7 @@ __version__ = "1.0.0"
 # Expose key modules for easier imports
 from .environment import Environment
 # from .snake import Snake
-# from .vision import Vision
+from .vision import Vision
 # from .agent import Agent
 # from .interpreter import Interpreter
 # from .display import Display
