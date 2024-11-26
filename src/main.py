@@ -79,6 +79,13 @@ if __name__ == "__main__":
 	print(Vision._print_vision(Vision._get_vision(env)))
 	print(env.step(action='RIGHT'))
 	print(env)
+	print(Vision._print_vision(Vision._get_vision(env)))
+	print(env.step(action='DOWN'))
+	print(env)
+	print(Vision._print_vision(Vision._get_vision(env)))
+	print(env.step(action='LEFT'))
+	print(env)
+	print(Vision._print_vision(Vision._get_vision(env)))
 
 	# theApp = App()
 	# theApp.on_execute()

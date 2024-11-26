@@ -32,6 +32,7 @@ class Vision:
 		}
 
 		repr = "\n"
+		print(vision)
 
 		# Build the column above the Snake's Head row
 		for row in range(vision[0][0]):
