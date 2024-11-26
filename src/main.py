@@ -2,6 +2,7 @@
 # from pygame.locals import *
 
 from environment import Environment
+from vision import Vision
 
 # class App:
 # 	"""
@@ -75,6 +76,7 @@ if __name__ == "__main__":
 	)
 
 	print(env)
+	print(Vision._print_vision(Vision._get_vision(env)))
 	print(env.step(action='RIGHT'))
 	print(env)
 
