@@ -3,6 +3,7 @@
 
 from environment import Environment
 from vision import Vision
+from interpreter import Interpreter
 
 # class App:
 # 	"""
@@ -76,16 +77,16 @@ if __name__ == "__main__":
 	)
 
 	print(env)
-	print(Vision._print_vision(Vision._get_vision(env)))
 	print(env.step(action='RIGHT'))
 	print(env)
-	print(Vision._print_vision(Vision._get_vision(env)))
 	print(env.step(action='DOWN'))
 	print(env)
 	print(Vision._print_vision(Vision._get_vision(env)))
 	print(env.step(action='LEFT'))
 	print(env)
-	print(Vision._print_vision(Vision._get_vision(env)))
+
+	print(Interpreter.get_state(Vision._get_vision(env)))
+
 
 	# theApp = App()
 	# theApp.on_execute()

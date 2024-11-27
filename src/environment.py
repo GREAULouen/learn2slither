@@ -1,5 +1,6 @@
 import random
 import numpy as np
+from interpreter import Interpreter
 
 # Board possible states:
 #   - O: Empty cell
@@ -47,7 +48,7 @@ class Environment:
 		if collision in ['W', 'S']:
 			return 'GAME_OVER'
 		old_tail = self.snake[-1]
-		reward = 0
+		reward = Interpreter.get_reward('EAT_NOTHING')
 		if collision == '0':
 			self._move_snake(new_head)
 		else:
@@ -161,13 +162,13 @@ class Environment:
 			self.snake = self.snake[:-1]
 			self.red_apples = [self._random_empty_cell('R')]
 			self._update_board()
-			return -1
+			return Interpreter.get_reward('EAT_RED_APPLE')
 		self.green_apples.remove(new_head)
 		self._move_snake(new_head)
 		self.snake.append(old_tail)
 		self._update_board()
 		self.green_apples.append(self._random_empty_cell('G'))
-		return 1
+		return Interpreter.get_reward('EAT_GREEN_APPLE')
 
 
 	def __repr__(self):
