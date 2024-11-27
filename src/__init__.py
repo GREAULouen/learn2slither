@@ -19,6 +19,6 @@ from .environment import Environment
 # from .snake import Snake
 from .vision import Vision
 # from .agent import Agent
-# from .interpreter import Interpreter
+from .interpreter import Interpreter
 # from .display import Display
 # from .utils import *
