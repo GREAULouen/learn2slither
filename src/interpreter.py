@@ -6,6 +6,7 @@ class Interpreter:
 		"""Converts the vision into a usable state"""
 		return vision
 
+	@staticmethod
 	def _get_reward(state):
 		"""Define rewards for each game events"""
 		rewards = {
