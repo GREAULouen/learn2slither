@@ -18,6 +18,8 @@ class Agent:
 		self.q_function = q_function
 		self.epsilon_decay_method = epsilon_decay_method
 		self.epsilon_decay_rate = epsilon_decay_rate
+		if not self.epsilon_decay_method == 'None':
+			self.epsilon = 1.0
 
 	def act(self, state):
 		"""Choose an action using epsilon-greedy policy."""
@@ -31,7 +33,7 @@ class Agent:
 		return max_action[0]
 
 	def update(self, state, action, reward, next_state):
-		if self.q_function == 'time_difference':
+		if self.q_function == 'time-difference':
 			self._time_difference(state, action, reward, next_state)
 		elif self.q_function == 'bellman':
 			self._bellman_equation(state, action, reward, next_state)

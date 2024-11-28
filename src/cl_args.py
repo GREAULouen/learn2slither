@@ -68,14 +68,14 @@ def parse_arguments():
 	parser.add_argument(
 		"--agent-learning-rate",
 		type=float,
-		default=0.01,
+		default=0.1,
 		metavar="[0.0-1.0]",
 		help="Learning rate for the agent (default: 0.01). Must be between 0.0 and 1.0.",
 	)
 	parser.add_argument(
 		"--agent-discount-factor",
 		type=float,
-		default=0.99,
+		default=0.9,
 		metavar="[0.0-1.0]",
 		help="Discount factor for future rewards (default: 0.99). Must be between 0.0 and 1.0.",
 	)
