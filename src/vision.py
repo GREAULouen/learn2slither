@@ -32,7 +32,6 @@ class Vision:
 		}
 
 		repr = "\n"
-		print(vision)
 
 		# Build the column above the Snake's Head row
 		for row in range(vision[0][0]):
@@ -53,4 +52,4 @@ class Vision:
 				row_repr += " "
 			repr += row_repr + f"{color_map.get(vision[2][row])}{vision[2][row]}{RESET}\n"
 
-		return repr
+		print(repr)
