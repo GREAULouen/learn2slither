@@ -1,11 +1,12 @@
-# import pygame
-# from pygame.locals import *
-
+#!venv/bin/python
 from environment import Environment
 from agent import Agent
 from vision import Vision
 from interpreter import Interpreter
+from cl_args import parse_arguments
 
+# import pygame
+# from pygame.locals import *
 # class App:
 # 	"""
 # 	Main Application class, containing:
@@ -77,40 +78,47 @@ if __name__ == "__main__":
 	# 	red_apples=[(2, 1)]
 	# )
 
-	agent = Agent(epsilon=0.05)
-	agent.load('/Users/lgreau/goinfre/models/test.txt')
+	args = parse_arguments()
 
-	for k in range(10000000):
-		env = Environment()
-		vision = Vision._get_vision(env)
-		state = Interpreter._get_state(vision)
-		restart = False
-		while not restart:
-			# print(env)
-			# Vision._print_vision(vision)
-			action = agent.act(vision)
-			# print(action)
-			reward = env.step(action)
+	print("Command-line arguments:")
+	for key, value in vars(args).items():
+		print(f"  {key}: {value}")
+	# pass
 
-			if reward == Interpreter._get_reward('GAME_OVER') \
-				or len(env.snake) == 0:
-				restart = True
-				agent.update_game_over(state, action)
-			else:
-				if len(env.snake) > 9:
-					print(f"length > 9")
-					agent.save('/Users/lgreau/goinfre/models/test.txt')
-					print(env)
-					print(f"{k} games")
-					exit(0)
-				vision = Vision._get_vision(env)
-				next_state = Interpreter._get_state(vision)
-				agent.update(state, action, reward, next_state)
-				state = next_state
+	# agent = Agent(epsilon=0.05)
+	# agent.load('/Users/lgreau/goinfre/models/test.txt')
+
+	# for k in range(1):
+	# 	env = Environment()
+	# 	vision = Vision._get_vision(env)
+	# 	state = Interpreter._get_state(vision)
+	# 	restart = False
+	# 	while not restart:
+	# 		# print(env)
+	# 		# Vision._print_vision(vision)
+	# 		action = agent.act(vision)
+	# 		# print(action)
+	# 		reward = env.step(action)
+
+	# 		if reward == Interpreter._get_reward('GAME_OVER') \
+	# 			or len(env.snake) == 0:
+	# 			restart = True
+	# 			agent.update_game_over(state, action)
+	# 		else:
+	# 			if len(env.snake) > 9:
+	# 				print(f"length > 9")
+	# 				agent.save('/Users/lgreau/goinfre/models/test.txt')
+	# 				print(env)
+	# 				print(f"{k} games")
+	# 				exit(0)
+	# 			vision = Vision._get_vision(env)
+	# 			next_state = Interpreter._get_state(vision)
+	# 			agent.update(state, action, reward, next_state)
+	# 			state = next_state
 
 
-		# print(f"states visited: {len(agent.q_table)}")
-	agent.save('/Users/lgreau/goinfre/models/test.txt')
+	# 	# print(f"states visited: {len(agent.q_table)}")
+	# agent.save('/Users/lgreau/goinfre/models/test.txt')
 
 
 	# theApp = App()
