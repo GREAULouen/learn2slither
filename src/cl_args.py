@@ -54,9 +54,9 @@ def parse_arguments():
 	# Agent and Q-function arguments
 	parser.add_argument(
 		"--q-function",
-		choices=["td", "bellman"],
-		default="td",
-		help="Choose Q-function update method: 'td' (default) or 'bellman'.",
+		choices=["time-difference", "bellman"],
+		default="time-difference",
+		help="Choose Q-function update method: 'time-difference' (default) or 'bellman'.",
 	)
 	parser.add_argument(
 		"--agent-epsilon",
