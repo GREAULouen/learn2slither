@@ -79,6 +79,17 @@ def parse_arguments():
 		metavar="[0.0-1.0]",
 		help="Discount factor for future rewards (default: 0.99). Must be between 0.0 and 1.0.",
 	)
+	parser.add_argument(
+		"--progress-bar",
+		action="store_true",
+		help="Print a progress bar during sessions."
+	)
+	parser.add_argument(
+		"--objective",
+		type=int,
+		default=10,
+		help="Objective snake length (must be > 3)."
+	)
 
 	args = parser.parse_args()
 
@@ -91,5 +102,9 @@ def parse_arguments():
 		value = getattr(args, attr)
 		if not (0.0 <= value <= 1.0):
 			parser.error(f"{attr.replace('_', '-')} must be between 0.0 and 1.0.")
+
+	# Validate objective > 3
+	if args.objective <= 3:
+		parser.error(f"The objective only makes sense if over 3, set at {args.objective}")
 
 	return args

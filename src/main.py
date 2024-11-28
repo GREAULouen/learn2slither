@@ -4,6 +4,7 @@ from agent import Agent
 from vision import Vision
 from interpreter import Interpreter
 from cl_args import parse_arguments
+from utils import print_progress_bar
 
 # import pygame
 # from pygame.locals import *
@@ -87,6 +88,9 @@ def configure_agent(args):
 
 def train_or_test_session(agent, args):
 	"""Run a training or testing session."""
+	max_length = 0
+	max_length_session = 0
+
 	for session in range(args.sessions):
 		env = Environment(size=args.grid_size)
 		vision = Vision._get_vision(env)
@@ -94,14 +98,16 @@ def train_or_test_session(agent, args):
 		game_over = False
 
 		while not game_over:
-			print(env)
-			Vision._print_vision(vision)
+			if args.visual == 'on':
+				print(env)
+				Vision._print_vision(vision)
 			# If step-by-step mode, wait for user input
 			if args.step_by_step:
 				input("Press Enter to perform the next step...")
 
 			action = agent.act(vision)
-			print(action)
+			if args.visual == 'on':
+				print(action)
 			reward = env.step(action)
 
 			if reward == Interpreter._get_reward("GAME_OVER") or len(env.snake) == 0:
@@ -115,7 +121,18 @@ def train_or_test_session(agent, args):
 					agent.update(state, action, reward, next_state)
 				state = next_state
 
-		print(f"Session {session + 1}/{args.sessions} ended. Snake length: {len(env.snake)}")
+		# Track maximum length and update
+		if len(env.snake) > max_length:
+			max_length = len(env.snake)
+			max_length_session = session + 1
+
+		# Print the progress bar if enabled
+		if args.progress_bar:
+			print_progress_bar(session, args.sessions, max_length, max_length_session, args)
+
+	# Final print for progress bar
+	if args.progress_bar:
+		print("\n")
 
 	# Save the model after training (if applicable)
 	if args.save and not args.test_mode:

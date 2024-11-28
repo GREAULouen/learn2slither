@@ -20,5 +20,5 @@ from .vision import Vision
 from .agent import Agent
 from .interpreter import Interpreter
 # from .display import Display
-# from .utils import *
+from .utils import *
 from .cl_args import *
