@@ -72,11 +72,16 @@ from utils import print_progress_bar
 
 def configure_agent(args):
 	"""Configure the agent based on command-line arguments."""
+	decay_rate = 0.0
+	if not args.epsilon_decay == 'None':
+		decay_rate = (1.0 - args.agent_epsilon) / args.sessions
 	agent = Agent(
 		epsilon=args.agent_epsilon,
 		learning_rate=args.agent_learning_rate,
 		discount_factor=args.agent_discount_factor,
-		q_function=args.q_function
+		q_function=args.q_function,
+		epsilon_decay_method=args.epsilon_decay,
+		epsilon_decay_rate=decay_rate
 	)
 	if args.load:
 		try:

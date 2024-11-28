@@ -90,8 +90,18 @@ def parse_arguments():
 		default=10,
 		help="Objective snake length (must be > 3)."
 	)
+	parser.add_argument(
+		"--epsilon-decay",
+		choices=["None", "linear", "exponential"],
+		default="None",
+		help="Gradually modify epsilon from 1.0 to agent-epsilon using [linear | exponential] method, disabled (None) by default"
+	)
 
 	args = parser.parse_args()
+
+	# Validate --sessions argument
+	if args.sessions <= 0:
+		parser.error(f"Can't perform less than 1 session: {args.sessions}")
 
 	# Validate --load argument
 	if args.load and not os.path.isfile(args.load):
