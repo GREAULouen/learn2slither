@@ -85,37 +85,49 @@ def configure_agent(args):
 			exit(1)
 	return agent
 
-if __name__ == "__main__":
-	agent = Agent(epsilon=0.05)
-	agent.load('/Users/lgreau/goinfre/models/test.txt')
-
-	for k in range(1):
-		env = Environment()
+def train_or_test_session(agent, args):
+	"""Run a training or testing session."""
+	for session in range(args.sessions):
+		env = Environment(size=args.grid_size)
 		vision = Vision._get_vision(env)
 		state = Interpreter._get_state(vision)
-		restart = False
-		while not restart:
-			# print(env)
-			# Vision._print_vision(vision)
+		game_over = False
+
+		while not game_over:
+			print(env)
+			Vision._print_vision(vision)
+			# If step-by-step mode, wait for user input
+			if args.step_by_step:
+				input("Press Enter to perform the next step...")
+
 			action = agent.act(vision)
-			# print(action)
+			print(action)
 			reward = env.step(action)
 
-			if reward == Interpreter._get_reward('GAME_OVER') \
-				or len(env.snake) == 0:
-				restart = True
-				agent.update_game_over(state, action)
+			if reward == Interpreter._get_reward("GAME_OVER") or len(env.snake) == 0:
+				game_over = True
+				if not args.test_mode:  # Update agent in learning mode
+					agent.update_game_over(state, action)
 			else:
-				if len(env.snake) > 9:
-					print(f"length > 9")
-					agent.save('/Users/lgreau/goinfre/models/test.txt')
-					print(env)
-					print(f"{k} games")
-					exit(0)
 				vision = Vision._get_vision(env)
 				next_state = Interpreter._get_state(vision)
-				agent.update(state, action, reward, next_state)
+				if not args.test_mode:  # Update agent in learning mode
+					agent.update(state, action, reward, next_state)
 				state = next_state
 
+		print(f"Session {session + 1}/{args.sessions} ended. Snake length: {len(env.snake)}")
 
-	agent.save('/Users/lgreau/goinfre/models/test.txt')
+	# Save the model after training (if applicable)
+	if args.save and not args.test_mode:
+		agent.save(args.save)
+		print(f"Model saved to {args.save}.")
+
+if __name__ == "__main__":
+	args = parse_arguments()
+	print("Starting Snake AI...")
+
+	# Configure the agent
+	agent = configure_agent(args)
+
+	# Run the training or testing sessions
+	train_or_test_session(agent, args)
