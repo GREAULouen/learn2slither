@@ -2,6 +2,7 @@
 # from pygame.locals import *
 
 from environment import Environment
+from agent import Agent
 from vision import Vision
 from interpreter import Interpreter
 
@@ -68,24 +69,48 @@ from interpreter import Interpreter
 # 		self.on_cleanup()
 
 if __name__ == "__main__":
-	env = Environment(
-		size=10,
-		manual_initialization=True,
-		snake=[(1, 1), (0, 1), (0, 2)],
-		green_apples=[(1, 0), (1, 2)],
-		red_apples=[(2, 1)]
-	)
+	# env = Environment(
+	# 	size=10,
+	# 	manual_initialization=True,
+	# 	snake=[(1, 1), (0, 1), (0, 2)],
+	# 	green_apples=[(1, 0), (1, 2)],
+	# 	red_apples=[(2, 1)]
+	# )
 
-	print(env)
-	print(env.step(action='RIGHT'))
-	print(env)
-	print(env.step(action='DOWN'))
-	print(env)
-	print(Vision._print_vision(Vision._get_vision(env)))
-	print(env.step(action='LEFT'))
-	print(env)
+	agent = Agent(epsilon=0.05)
+	agent.load('/Users/lgreau/goinfre/models/test.txt')
 
-	print(Interpreter.get_state(Vision._get_vision(env)))
+	for k in range(10000000):
+		env = Environment()
+		vision = Vision._get_vision(env)
+		state = Interpreter._get_state(vision)
+		restart = False
+		while not restart:
+			# print(env)
+			# Vision._print_vision(vision)
+			action = agent.act(vision)
+			# print(action)
+			reward = env.step(action)
+
+			if reward == Interpreter._get_reward('GAME_OVER') \
+				or len(env.snake) == 0:
+				restart = True
+				agent.update_game_over(state, action)
+			else:
+				if len(env.snake) > 9:
+					print(f"length > 9")
+					agent.save('/Users/lgreau/goinfre/models/test.txt')
+					print(env)
+					print(f"{k} games")
+					exit(0)
+				vision = Vision._get_vision(env)
+				next_state = Interpreter._get_state(vision)
+				agent.update(state, action, reward, next_state)
+				state = next_state
+
+
+		# print(f"states visited: {len(agent.q_table)}")
+	agent.save('/Users/lgreau/goinfre/models/test.txt')
 
 
 	# theApp = App()

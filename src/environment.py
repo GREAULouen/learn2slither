@@ -45,10 +45,18 @@ class Environment:
 		"""Modify the environment according to the action taken"""
 		new_head = self._compute_new_head(action)
 		collision = self._check_collision(new_head)
+		if collision == 'H':
+			print(self)
+			print(action)
+			print(new_head)
+			print(self.snake[0])
+			print(self.board[self.snake[0]])
+			print(self.board[new_head])
+			raise ValueError("Collided with its own head")
 		if collision in ['W', 'S']:
-			return 'GAME_OVER'
+			return Interpreter._get_reward('GAME_OVER')
 		old_tail = self.snake[-1]
-		reward = Interpreter.get_reward('EAT_NOTHING')
+		reward = Interpreter._get_reward('DEFAULT')
 		if collision == '0':
 			self._move_snake(new_head)
 		else:
@@ -121,7 +129,9 @@ class Environment:
 					and self.board[random_cell[0] + (x - 1)][random_cell[1] + (y - 1)] == '0'
 			]
 			if not empty_cells:
-				self.reset()
+				self.snake = []
+				self._update_board()
+				return self._initialize_snake()
 			random_cell = random.choice(empty_cells)
 			snake.append(random_cell)
 			self.board[random_cell] = 'S'
@@ -158,17 +168,22 @@ class Environment:
 	def _handle_apples(self, new_head, old_tail):
 		"""Modify the Snake according to the effect of the apple taken & Computes a reward score"""
 		if self.board[new_head] == 'R':
+			if len(self.snake) < 1:
+				return Interpreter._get_reward('GAME_OVER')
 			self._move_snake(new_head)
 			self.snake = self.snake[:-1]
 			self.red_apples = [self._random_empty_cell('R')]
 			self._update_board()
-			return Interpreter.get_reward('EAT_RED_APPLE')
-		self.green_apples.remove(new_head)
-		self._move_snake(new_head)
-		self.snake.append(old_tail)
-		self._update_board()
-		self.green_apples.append(self._random_empty_cell('G'))
-		return Interpreter.get_reward('EAT_GREEN_APPLE')
+			return Interpreter._get_reward('EAT_RED_APPLE')
+		elif self.board[new_head] == 'G':
+			self.green_apples.remove(new_head)
+			self._move_snake(new_head)
+			self.snake.append(old_tail)
+			self._update_board()
+			self.green_apples.append(self._random_empty_cell('G'))
+		else:
+			raise ValueError(f"Unhandled collision: {self.board[new_head]}")
+		return Interpreter._get_reward('EAT_GREEN_APPLE')
 
 
 	def __repr__(self):
