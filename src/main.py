@@ -76,6 +76,7 @@ def configure_agent(args):
 		epsilon=args.agent_epsilon,
 		learning_rate=args.agent_learning_rate,
 		discount_factor=args.agent_discount_factor,
+		q_function=args.q_function
 	)
 	if args.load:
 		try:
