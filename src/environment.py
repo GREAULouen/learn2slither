@@ -45,14 +45,6 @@ class Environment:
 		"""Modify the environment according to the action taken"""
 		new_head = self._compute_new_head(action)
 		collision = self._check_collision(new_head)
-		if collision == 'H':
-			print(self)
-			print(action)
-			print(new_head)
-			print(self.snake[0])
-			print(self.board[self.snake[0]])
-			print(self.board[new_head])
-			raise ValueError("Collided with its own head")
 		if collision in ['W', 'S']:
 			return Interpreter._get_reward('GAME_OVER')
 		old_tail = self.snake[-1]
