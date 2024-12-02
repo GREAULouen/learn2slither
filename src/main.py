@@ -121,6 +121,8 @@ def train_or_test_session(agent, args):
 				if not args.test_mode:  # Update agent in learning mode
 					agent.update_game_over(state, action)
 			else:
+				if reward == Interpreter._get_reward('DEFAULT'):
+					reward = Interpreter._compute_reward(state, action)
 				vision = Vision._get_vision(env)
 				next_state = Interpreter._get_state(vision)
 				if not args.test_mode:  # Update agent in learning mode
