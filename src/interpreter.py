@@ -1,56 +1,68 @@
+from math import floor
 
 
 class Interpreter:
 	@staticmethod
 	def _get_state(vision):
 		"""Converts the vision into a usable state"""
-		return vision
+		def find_first_not_of(list, to_skip):
+			"""Finds in the list the first occurence not in to_skip"""
+			index = [
+				i
+				for i in range(len(list))
+				if list[i] not in to_skip
+			] + [len(list)]
+			if not list[index[0]] in ['G', 'R']:
+				index = [0]
+			return list[:index[-1] + 1]
+
+		state = (
+			find_first_not_of(
+							list=vision[2][vision[0][0] - 1::-1],
+							to_skip=['0']
+						),
+			find_first_not_of(
+							list=vision[1][vision[0][1] - 1::-1],
+							to_skip=['0']
+						),
+			find_first_not_of(
+							list=vision[2][vision[0][0] + 1:],
+							to_skip=['0']
+						),
+			find_first_not_of(
+							list=vision[1][vision[0][1] + 1:],
+							to_skip=['0']
+						)
+		)
+
+		return state
 
 	@staticmethod
-	def _get_reward(state):
+	def _get_reward(event):
 		"""Define rewards for each game events"""
 		rewards = {
-			'EAT_GREEN_APPLE': 15,
-			'EAT_RED_APPLE': -15,
-			'TOWARD_GREEN_APPLE': 2,
-			'TOWARD_RED_APPLE': -2,
-			'DEFAULT': -1,
+			'G': 100,
+			'R': -70,
+			'W': -70,
+			'S': -70,
+			'DEFAULT': 0,
 			'GAME_OVER': -100
 		}
-		return rewards.get(state, 0)
+		return rewards.get(event, 0)
 
-	@staticmethod
-	def _compute_reward(state, action):
-		"""Computes 'TOWARD_XX' rewards with a linear evolution from DEFAULT"""
-		distance = {
-			'UP': 	[(i, state[2][state[0][0] - i])
-					for i in range(1, state[0][0])
-					if state[2][state[0][0] - i] in ['G', 'R']],
-					\
-			'LEFT': [(i, state[1][state[0][1] - i])
-					for i in range(1, state[0][1])
-					if state[1][state[0][1] - i] in ['G', 'R']],
-					\
-			'DOWN': [(i - state[0][0], state[2][i])
-					for i in range(state[0][0], len(state[2]))
-					if state[2][i] in ['G', 'R']],
-					\
-			'RIGHT': [(i - state[0][1], state[1][i])
-					for i in range(state[0][1], len(state[1]))
-					if state[1][i] in ['G', 'R']]
-		}
-		if len(distance[action]) == 0:
-			return Interpreter._get_reward('DEFAULT')
-		if distance[action][0][1] == 'G':
-			return (
-				Interpreter._get_reward('EAT_GREEN_APPLE') - \
-				distance[action][0][0] * Interpreter._get_reward('TOWARD_GREEN_APPLE')
-			)
-		elif distance[action][0][1] == 'R':
-			return (
-				Interpreter._get_reward('EAT_RED_APPLE') - \
-				distance[action][0][0] * Interpreter._get_reward('TOWARD_RED_APPLE')
-			)
-		else:
-			raise ValueError(f"Unhandled distance calculation: {distance[action][0][1]}")
+	# @staticmethod
+	# def _compute_reward(state, action, grid_size):
+	# 	"""Computes 'TOWARD_XX' rewards with a linear evolution from DEFAULT"""
+	# 	action_order = {
+	# 		'UP': 0,
+	# 		'LEFT': 1,
+	# 		'DOWN': 2,
+	# 		'RIGHT': 3
+	# 	}
+	# 	dir_state = state[action_order[action]]
+	# 	if dir_state[-1] == 'R':
+	# 		return Interpreter._get_reward('TOWARD_RED_APPLE')(grid_size)
+	# 	elif dir_state[-1] == 'G':
+	# 		return Interpreter._get_reward('TOWARD_GREEN_APPLE')(grid_size)
+	# 	return Interpreter._get_reward('DEFAULT')
 

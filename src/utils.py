@@ -1,7 +1,7 @@
 import sys
 from termcolor import colored
 
-def print_progress_bar(session, total_sessions, max_length, max_length_session, args):
+def print_progress_bar(session, total_sessions, max_length, max_length_session, max_length_grid_size, args):
 	"""Prints a progress bar with color transitions and max length reached."""
 	progress = (session + 1) / total_sessions
 	progress_percent = int(progress * 100)
@@ -21,7 +21,7 @@ def print_progress_bar(session, total_sessions, max_length, max_length_session, 
 	bar_length = 30
 	filled_length = int(bar_length * progress)
 	bar = f"{progress_color}{'█' * filled_length}{'░' * (bar_length - filled_length)}\033[0m"
-	max_info = f"Max Length: {max_color}{max_length}\033[0m (Session {max_length_session})"
+	max_info = f"Max Length: {max_color}{max_length}\033[0m (Session {max_length_session}, Size {max_length_grid_size}x{max_length_grid_size})"
 
 	# Display progress bar and overwrite previous line
 	sys.stdout.write(f"\r[{bar}] {progress_percent}% - {max_info}")

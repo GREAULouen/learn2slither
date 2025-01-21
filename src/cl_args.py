@@ -26,9 +26,9 @@ def parse_arguments():
 	)
 	parser.add_argument(
 		"--visual",
-		choices=["on", "off"],
-		default="on",
-		help="Enable or disable the display (default: on).",
+		choices=["terminal-only", "graphical-interface-only", "off"],
+		default="terminal-only",
+		help="Enable or disable the display (default: terminal-only).",
 	)
 	parser.add_argument(
 		"--step-by-step",
@@ -46,8 +46,8 @@ def parse_arguments():
 		"--grid-size",
 		type=int,
 		default=10,
-		choices=range(3, 101),  # Ensures grid size is >= 3
-		metavar="[3-100]",
+		choices=range(3, 102),  # Ensures grid size is >= 3
+		metavar="[3-101]",
 		help="Size of the grid (default: 10). Minimum is 3.",
 	)
 
@@ -92,9 +92,19 @@ def parse_arguments():
 	)
 	parser.add_argument(
 		"--epsilon-decay",
-		choices=["None", "linear", "exponential"],
-		default="None",
-		help="Gradually modify epsilon from 1.0 to agent-epsilon using [linear | exponential] method, disabled (None) by default"
+		nargs="+",
+		help="Gradually modify epsilon. Use 'linear <start_value> <end_value>' or 'exponential <start_value> <end_value>'.",
+	)
+	parser.add_argument(
+		"--progressive-grid-size",
+		nargs="+",
+		help="Modify the grid size over time. Use 'random <start_size> <end_size>' or 'logarithmic <start_size> <end_size>'.",
+	)
+	parser.add_argument(
+		"--visual-speed",
+		type=float,
+		default=0.0,
+		help="Delay in seconds between each step of visualization (default: 0.0, no delay).",
 	)
 
 	args = parser.parse_args()
@@ -116,5 +126,27 @@ def parse_arguments():
 	# Validate objective > 3
 	if args.objective <= 3:
 		parser.error(f"The objective only makes sense if over 3, set at {args.objective}")
+
+	# Validate epsilon-decay
+	if args.epsilon_decay:
+		method, *values = args.epsilon_decay
+		if method not in ["linear", "exponential"]:
+			parser.error("Epsilon-decay must be 'linear' or 'exponential'.")
+		if len(values) != 2:
+			parser.error("Epsilon-decay requires <start_value> and <end_value>.")
+		start_value, end_value = map(float, values)
+		if not (0.0 <= start_value <= 1.0 and 0.0 <= end_value <= 1.0):
+			parser.error("Epsilon values must be between 0.0 and 1.0.")
+
+	# Validate progressive-grid-size
+	if args.progressive_grid_size:
+		method, *values = args.progressive_grid_size
+		if method not in ["random", "logarithmic"]:
+			parser.error("Progressive-grid-size must be 'random' or 'logarithmic'.")
+		if len(values) != 2:
+			parser.error("Progressive-grid-size requires <start_size> and <end_size>.")
+		start_size, end_size = map(int, values)
+		if not (3 <= start_size <= 100 and 3 <= end_size <= 100):
+			parser.error("Grid size must be between 3 and 100.")
 
 	return args

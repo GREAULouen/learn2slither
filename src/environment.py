@@ -103,6 +103,7 @@ class Environment:
 			if self.board[x][y] == '0'
 		]
 		if not empty_cells:
+			print(self.board)
 			raise ValueError("No empty cells available on the board.")
 		random_cell = random.choice(empty_cells)
 		snake.append(random_cell)
@@ -184,29 +185,45 @@ class Environment:
 		GREEN = "\033[92m"
 		RED = "\033[91m"
 		BLUE = "\033[94m"
-		DARK_BLUE = "\033[34m"
+		YELLOW = "\033[33m"
 		RESET = "\033[0m"
 
-		# Generate the board representation
-		repr_lines = []
-		first_row = "   | "
-		for k in range(self.size):
-			first_row += (f" {k}")
-		repr_lines.append(first_row)
-		repr_lines.append("---+---------------------")
+		# Determine column width dynamically based on the number of digits in size
+		col_width = len(str(self.size - 1))
+		spacer = " " * (col_width + 1)
+
+		# Generate the header row with column numbers
+		first_row = spacer + "| " + " ".join(f"{str(k).rjust(col_width)}" for k in range(self.size))
+		repr_lines = [first_row]
+
+		# Generate the horizontal separator line
+		separator = "-" * len(first_row)
+		repr_lines.append(separator)
+
+		# Generate the grid representation
 		for x in range(self.size):
-			row = [f" {x} | "]
+			# Row label with padding
+			row_label = f"{str(x).rjust(col_width)} |"
+			row = [row_label]
+
 			for y in range(self.size):
-				cell = self.board[(x,y)]
+				cell = self.board[(x, y)]
 				if cell == 'G':  # Green apple
 					row.append(f"{GREEN}G{RESET}")
 				elif cell == 'R':  # Red apple
 					row.append(f"{RED}R{RESET}")
 				elif (x, y) == self.snake[0]:  # Snake's head
-					row.append(f"{DARK_BLUE}H{RESET}")
+					row.append(f"{YELLOW}H{RESET}")
 				elif (x, y) in self.snake[1:]:  # Snake's body
 					row.append(f"{BLUE}S{RESET}")
 				else:  # Empty space
-					row.append("0")
-			repr_lines.append(" ".join(row))
+					if x == self.snake[0][0] or y == self.snake[0][1]:
+						row.append(f"{YELLOW}0{RESET}")
+					else:
+						row.append("0")
+
+			# Join row cells with a space and add to the representation
+			repr_lines.append((" " * col_width).join(row))
+
+		# Join all rows into a single string with newlines
 		return "\n".join(repr_lines)
