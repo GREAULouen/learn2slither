@@ -26,7 +26,7 @@ def parse_arguments():
 	)
 	parser.add_argument(
 		"--visual",
-		choices=["terminal-only", "graphical-interface-only", "off"],
+		choices=["all", "terminal-only", "graphical-interface-only", "off"],
 		default="terminal-only",
 		help="Enable or disable the display (default: terminal-only).",
 	)

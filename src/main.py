@@ -5,6 +5,7 @@ from vision import Vision
 from interpreter import Interpreter
 from cl_args import parse_arguments
 from utils import print_progress_bar
+from app import App
 
 import time
 import numpy as np
@@ -213,5 +214,8 @@ if __name__ == "__main__":
 	# Configure the agent
 	agent = configure_agent(args)
 
-	# Run the training or testing sessions
-	train_or_test_session(agent, args)
+	if args.visual in ['all', 'graphical-interface-only']:
+		app = App(args)
+	else:
+		# Run the training or testing sessions
+		train_or_test_session(agent, args)
