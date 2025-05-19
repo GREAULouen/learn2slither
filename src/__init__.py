@@ -1,7 +1,7 @@
 """
-Snake Game Reinforcement Learning Package
+Learn2Slither
 -----------------------------------------
-This package contains the core modules for the Snake AI project:
+Package modules:
 - environment: Board and game logic
 - snake: Snake entity and movement logic
 - vision: Snake's perception of the board
